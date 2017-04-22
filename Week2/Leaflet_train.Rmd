@@ -1,0 +1,33 @@
+---
+title: "My favorite Columbia Libraries"
+author: "Mariia Danilenko"
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output: 
+  html_document:
+    keep_rm: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+If you have to study something hard you really need some quite places near where you live. Libraries are such good places to think! 
+Here is my list of favorite Columbia University Libraries.
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+library(leaflet)
+libNames <- c("Avery", "Barnard","Business","Butler","Math")
+df <- data.frame(lat=40.808381, lng=-73.960884)
+newrow=c(40.809097, -73.963939)
+df = rbind(df,newrow)
+newrow=c(40.809231, -73.961147)
+df = rbind(df,newrow)
+newrow=c(40.806422, -73.963225)
+df = rbind(df,newrow)
+newrow=c(40.808988, -73.962783)
+df = rbind(df,newrow)
+df %>% 
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(popup=libNames)
+
+```
+
