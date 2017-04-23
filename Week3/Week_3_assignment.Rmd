@@ -1,0 +1,34 @@
+---
+title: "Carat data presentation"
+author: "Mariia Danilenko"
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output: 
+  slidy_presentation:
+    keep_rm: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## First view
+```{r message=FALSE,warning=FALSE}
+library(plotly)
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+plot_ly(d, x = ~carat, y = ~price, color = ~carat,
+        size = ~carat, text = ~paste("Clarity: ", clarity))
+```
+
+
+## Second view
+
+```{r message=FALSE,warning=FALSE}
+library(ggplot2)
+p <- ggplot(data = d, aes(x = carat, y = price)) +
+  geom_point(aes(text = paste("Clarity:", clarity))) +
+  geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
+
+ggplotly(p)
+```
+
