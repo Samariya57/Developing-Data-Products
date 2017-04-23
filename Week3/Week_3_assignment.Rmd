@@ -1,5 +1,5 @@
 ---
-title: "Carat data presentation"
+title: "mtcars data presentation"
 author: "Mariia Danilenko"
 date: "`r format(Sys.time(), '%d/%m/%Y')`"
 output: 
@@ -14,21 +14,18 @@ knitr::opts_chunk$set(echo = FALSE)
 ## First view
 ```{r message=FALSE,warning=FALSE}
 library(plotly)
-set.seed(100)
-d <- diamonds[sample(nrow(diamonds), 1000), ]
-plot_ly(d, x = ~carat, y = ~price, color = ~carat,
-        size = ~carat, text = ~paste("Clarity: ", clarity))
+
+my_plot<-plot_ly(x = mtcars$cyl, y = mtcars$hp, z=mtcars$wt, 
+                 type = "scatter3d", mode = "markers", color = mtcars$mpg, 
+                 text = ~paste("MPG: ", mtcars$mpg))%>% 
+        layout(title = "Colorfull MPGs from mtcars data",
+         scene = list(
+           xaxis = list(title = "Cylinders"), 
+           yaxis = list(title = "Horse Powers"), 
+           zaxis = list(title = "Weight")))
+my_plot
 ```
 
 
-## Second view
-
-```{r message=FALSE,warning=FALSE}
-library(ggplot2)
-p <- ggplot(data = d, aes(x = carat, y = price)) +
-  geom_point(aes(text = paste("Clarity:", clarity))) +
-  geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
-
-ggplotly(p)
-```
+## To be continued
 
