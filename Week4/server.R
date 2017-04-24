@@ -26,6 +26,28 @@ bmi_g <- read.table("bfa_girls_z_exp.txt", header=TRUE, sep="\t")
 shinyServer(function(input, output) {
    
   output$days = renderText({paste("Your baby is ",Sys.Date()-as.Date(input$DOB)," day(s) old.\n", sep="")})
+  output$BMI = renderText ({
+    BMI = round(as.numeric(input$wght)/(as.numeric(input$hght)/100)^2,digits=2)
+    if (input$gender=="Male"){
+      if (as.numeric(BMI) < bmi_b[as.numeric(days)+1, 2]){
+        answer <- "very low value"
+      } else if (as.numeric(BMI) > bmi_b[as.numeric(days)+1, 10]){
+        answer <- "very high value"
+      } else{
+        answer <- "normal value"
+      }
+      paste("Your baby BMI = ",BMI, ". It's a ", answer, " for his age")
+    } else {
+      if (as.numeric(BMI) < bmi_g[as.numeric(days)+1, 2]){
+        answer <- "very low value"
+      } else if (as.numeric(BMI) > bmi_g[as.numeric(days)+1, 10]){
+        answer <- "very high value"
+      } else{
+        answer <- "normal value"
+      }
+      paste("Your baby BMI = ",BMI, ". It's a ", answer, " for her age")
+    }
+  })
   
   output$sum_wght <- renderText({
     days = Sys.Date()-as.Date(input$DOB)
@@ -119,4 +141,27 @@ shinyServer(function(input, output) {
     points( days , as.numeric(input$hght), col="black", pch=16)
   })
   
+  output$BMI_plot <- renderPlot({
+    
+    BMI = round(as.numeric(input$wght)/(as.numeric(input$hght)/100)^2,digits=2)
+    days = Sys.Date()-as.Date(input$DOB)
+    #par(bg = "lightyellow")
+    if (input$gender=="Female"){
+      plot(bmi_g$Day, bmi_g$SD4, col="deeppink3", type = "l", 
+           xlim = c(max(as.numeric(Sys.Date()-as.Date(input$DOB)-input$range),0),
+                    min(as.numeric(Sys.Date()-as.Date(input$DOB)+input$range),1856)),
+           ylim = c(-1,50),
+           xlab = "Days", ylab="BMI")
+      lines(bmi_g$Day, bmi_g$SD4neg, col="deeppink3")
+    }
+    if (input$gender=="Male"){
+      plot(bmi_b$Day, bmi_b$SD4, col="blue", type = "l", 
+           xlim = c(max(as.numeric(Sys.Date()-as.Date(input$DOB)-input$range),0),
+                    min(as.numeric(Sys.Date()-as.Date(input$DOB)+input$range),1856)),
+           ylim = c(-1,50),
+           xlab = "Days", ylab="BMI")
+      lines(bmi_b$Day, bmi_b$SD4neg, col="blue")
+    }
+    points( days , BMI, col="black", pch=16)
+  })
 })
