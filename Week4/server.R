@@ -25,17 +25,57 @@ bmi_g <- read.table("bfa_girls_z_exp.txt", header=TRUE, sep="\t")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
    
-  .#output$sum_wght <- reactiveText({
-  #  days = Sys.Date()-as.Date(input$DOB)
-   # if (input$wght>wght_b[wght_b[,"Days"]=days, "SD4"]){
-  #    
-  #  }
-  #})
+  output$days = renderText({paste("Your baby is ",Sys.Date()-as.Date(input$DOB)," day(s) old.\n", sep="")})
   
+  output$sum_wght <- renderText({
+    days = Sys.Date()-as.Date(input$DOB)
+    if (input$gender=="Male"){
+      if (as.numeric(input$wght) < wght_b[as.numeric(days)+1, 2]){
+        answer <- "underweight"
+      } else if (as.numeric(input$wght) > wght_b[as.numeric(days)+1, 10]){
+        answer <- "overweight"
+      } else{
+        answer <- "normal weight"
+      }
+      paste ("He is ",answer)
+    } else {
+      if (as.numeric(input$wght) < wght_g[as.numeric(days)+1, 2]){
+        answer <- "underweight"
+      } else if (as.numeric(input$wght) > wght_g[as.numeric(days)+1, 10]){
+        answer <- "overweight"
+      } else{
+        answer <- "normal weight"
+      }
+      paste ("She is ",answer, ".\n")
+    }
+  })
+  
+  output$sum_hght <- renderText({
+    days = Sys.Date()-as.Date(input$DOB)
+    if (input$gender=="Male"){
+      if (as.numeric(input$hght) < hght_b[as.numeric(days)+1, 2]){
+        answer <- "underheight"
+      } else if (as.numeric(input$hght) > hght_b[as.numeric(days)+1, 10]){
+        answer <- "overheight"
+      } else{
+        answer <- "normal height"
+      }
+      paste ("He is ",answer)
+    } else {
+      if (as.numeric(input$hght) < hght_g[as.numeric(days)+1, 2]){
+        answer <- "underheight"
+      } else if (as.numeric(input$hght) > hght_g[as.numeric(days)+1, 10]){
+        answer <- "overheight"
+      } else{
+        answer <- "normal height"
+      }
+      paste ("She is ",answer, ".\n")
+    }
+  })
   output$weight_plot <- renderPlot({
 
     days = Sys.Date()-as.Date(input$DOB)
-    par(bg = "lightyellow")
+    #par(bg = "lightyellow")
     if (input$gender=="Female"){
     plot(wght_g$Day, wght_g$SD4, col="deeppink3", type = "l", 
          xlim = c(max(as.numeric(Sys.Date()-as.Date(input$DOB)-input$range),0),
@@ -52,14 +92,14 @@ shinyServer(function(input, output) {
            xlab = "Days", ylab="Weight in kgs")
       lines(wght_b$Day, wght_b$SD4neg, col="blue")
     }
-    points( days , as.numeric(input$wght), col="black", pch=16)
+    points(days , as.numeric(input$wght), col="black", pch=16)
     
   })
   
   output$height_plot <- renderPlot({
     
     days = Sys.Date()-as.Date(input$DOB)
-    par(bg = "lightyellow")
+    #par(bg = "lightyellow")
     if (input$gender=="Female"){
       plot(hght_g$Day, hght_g$SD4, col="deeppink3", type = "l", 
            xlim = c(max(as.numeric(Sys.Date()-as.Date(input$DOB)-input$range),0),
